@@ -19,41 +19,40 @@ const FourierSeriesCanvas = () => {
             const centerX = offsetX + initialRadius;
             const centerY = offsetY + initialRadius;
 
-            let currentX = centerX;
-            let currentY = centerY;
 
-            for (let i = 1; i <= 3; i+=2) {
+            let x = centerX;
+            let y = centerY;
+
+            for (let i = 1; i <= 9; i += 2) {
+                const prevX = x;
+                const prevY = y;
 
                 const currentRadius = initialRadius * 4 / (i * Math.PI);
 
-                
+                x += currentRadius * Math.cos(i * time);
+                y += currentRadius * Math.sin(i * time);
+
+
                 ctx.strokeStyle = "rgba(255,165,0,0.5)"
                 ctx.beginPath();
-                ctx.arc(currentX, currentY, currentRadius, 0, 2 * Math.PI);
+                ctx.arc(prevX, prevY, currentRadius, 0, 2 * Math.PI);
                 ctx.stroke();
 
 
-
-                const dx = currentRadius * Math.cos(i * time);
-                const dy = currentRadius * Math.sin(i * time);
-                const nextX = (currentX + dx);
-                const nextY = (currentY + dy);
                 ctx.strokeStyle = "#000000"
                 ctx.beginPath();
-                ctx.moveTo(currentX, currentY);
-                ctx.lineTo(nextX, nextY);
+                ctx.moveTo(prevX, prevY);
+                ctx.lineTo(x, y);
                 ctx.stroke();
-                currentX = nextX;
-                currentY = nextY;
             }
             const nextWavePoints = wavePoints.slice();
-            nextWavePoints.unshift({currentX, currentY})
+            nextWavePoints.unshift(y)
             setWavePoints(nextWavePoints);
 
             ctx.beginPath();
-            ctx.moveTo(0, 0)
-            for(let i = 1; i < wavePoints.length; i++) {
-                ctx.lineTo(wavePoints[i].currentX, wavePoints[i].currentY);
+            ctx.moveTo(x, y)
+            for (let i = 0; i < wavePoints.length; i++) {
+                ctx.lineTo(i + 300, wavePoints[i]);
             }
             ctx.stroke();
 
